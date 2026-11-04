@@ -40,4 +40,49 @@ defmodule GanttSvg do
     IO.write(archivo, "</svg>\n")
   end
 
+  defp escribir_gantt(archivo, plan, tareas) do
+    finalizaciones = plan.finalizaciones
+
+    {_id, _inicio, tiempo_total} = Enum.at(finalizaciones, -1)
+
+    plazo_mayor = mayor_plazo(tareas, 0)
+
+    limite =
+      if plazo_mayor > tiempo_total do
+        plazo_mayor
+      else
+        tiempo_total
+      end
+
+    cantidad = length(finalizaciones)
+    ancho = margen_izquierdo() + limite * escala() + 150
+    alto = margen_superior() + cantidad * separacion() + 90
+    y_final_eje = margen_superior() + cantidad * separacion()
+
+    IO.write(archivo, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+
+    IO.write(
+      archivo,
+      "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"#{ancho}\" height=\"#{alto}\" viewBox=\"0 0 #{ancho} #{alto}\">\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <rect x=\"0\" y=\"0\" width=\"#{ancho}\" height=\"#{alto}\" fill=\"#ffffff\" />\n"
+    )
+
+    titulo =
+      escapar("Diagrama de Gantt - duración #{tiempo_total} - penalización #{plan.penalizacion}")
+
+    IO.write(
+      archivo,
+      "  <text x=\"20\" y=\"30\" font-family=\"Arial\" font-size=\"18\" font-weight=\"bold\" fill=\"#2c3e50\">#{titulo}</text>\n"
+    )
+
+    escribir_eje(archivo, 0, limite, y_final_eje)
+    escribir_barras(archivo, finalizaciones, tareas, 0)
+    escribir_leyenda(archivo, y_final_eje + 30)
+
+    IO.write(archivo, "</svg>\n")
+  end
 end
