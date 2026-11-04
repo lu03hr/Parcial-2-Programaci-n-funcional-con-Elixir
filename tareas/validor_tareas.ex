@@ -276,6 +276,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     end
   end
 
+  # Convierte cada ciclo [A, C, B] en el mensaje "Ciclo: A -> C -> B -> A".
   defp describir_ciclos([], mensajes), do: invertir(mensajes, [])
 
   defp describir_ciclos([ciclo | resto], mensajes) do
