@@ -96,4 +96,34 @@ defmodule ValidorTareas do
 
     defp revisar_numeros([], errores), do: invertir(errores, [])
 
+    defp revisar_numeros([{numero, id, duracion, plazo, _deps} | resto], errores) do
+    errores_1 =
+      case Integer.parse(duracion) do
+        {valor, ""} ->
+          if valor > 0 do
+            errores
+          else
+            ["Línea #{numero} (tarea '#{id}'): la duración #{duracion} debe ser positiva." | errores]
+          end
+
+        _ ->
+          ["Línea #{numero} (tarea '#{id}'): la duración '#{duracion}' no es un entero." | errores]
+      end
+
+    errores_2 =
+      case Integer.parse(plazo) do
+        {valor, ""} ->
+          if valor >= 0 do
+            errores_1
+          else
+            ["Línea #{numero} (tarea '#{id}'): el plazo #{plazo} no puede ser negativo." | errores_1]
+          end
+
+        _ ->
+          ["Línea #{numero} (tarea '#{id}'): el plazo '#{plazo}' no es un entero." | errores_1]
+      end
+
+    revisar_numeros(resto, errores_2)
+  end
+
 end
