@@ -112,4 +112,56 @@ defmodule GanttSvg do
     end
   end
 
+
+  defp escribir_barras(_archivo, [], _tareas, _indice), do: :ok
+
+  defp escribir_barras(archivo, [{id, inicio, fin} | resto], tareas, indice) do
+    tarea = buscar_tarea(tareas, id)
+    fuera_de_plazo = fin > tarea.plazo
+
+    color =
+      if fuera_de_plazo do
+        "#e74c3c"
+      else
+        "#3498db"
+      end
+
+    x = margen_izquierdo() + inicio * escala()
+    y = margen_superior() + indice * separacion()
+    ancho = (fin - inicio) * escala()
+    x_plazo = margen_izquierdo() + tarea.plazo * escala()
+    id_seguro = escapar(id)
+
+    IO.write(
+      archivo,
+      "  <text x=\"15\" y=\"#{y + 20}\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#2c3e50\">#{id_seguro}</text>\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <rect x=\"#{x}\" y=\"#{y}\" width=\"#{ancho}\" height=\"#{alto_barra()}\" fill=\"#{color}\" stroke=\"#2c3e50\" stroke-width=\"1\" />\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <line x1=\"#{x_plazo}\" y1=\"#{y - 5}\" x2=\"#{x_plazo}\" y2=\"#{y + alto_barra() + 5}\" stroke=\"#2c3e50\" stroke-width=\"2\" stroke-dasharray=\"4 3\" />\n"
+    )
+
+    x_texto =
+      if x_plazo > x + ancho do
+        x_plazo + 8
+      else
+        x + ancho + 8
+      end
+
+    texto_tiempos = escapar("inicio #{inicio} - fin #{fin}")
+
+    IO.write(
+      archivo,
+      "  <text x=\"#{x_texto}\" y=\"#{y + 20}\" font-family=\"Arial\" font-size=\"12\" fill=\"#333333\">#{texto_tiempos}</text>\n"
+    )
+
+    escribir_barras(archivo, resto, tareas, indice + 1)
+  end
+
 end
