@@ -265,6 +265,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     explorar_vecinos(resto, inicio, camino, grafo, ciclos_1)
   end
 
+  # Devuelve la lista de dependencias de un id dentro del grafo.
   defp vecinos_de(_id, []), do: []
 
   defp vecinos_de(id, [{otro_id, deps} | resto]) do
