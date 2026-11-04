@@ -237,4 +237,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
+
+  defp contar([], cantidad), do: cantidad
+  defp contar([_primero | resto], cantidad), do: contar(resto, cantidad + 1)
 end
