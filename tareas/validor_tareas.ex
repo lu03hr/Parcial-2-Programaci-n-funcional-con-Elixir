@@ -307,6 +307,16 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     escribir_lineas(archivo, resto)
   end
 
+  defp esta_en_lista?(_elemento, []), do: false
+
+  defp esta_en_lista?(elemento, [otro | resto]) do
+    if elemento == otro do
+      true
+    else
+      esta_en_lista?(elemento, resto)
+    end
+  end
+
 
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
