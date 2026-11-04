@@ -28,4 +28,23 @@ defmodule ValidorTareas do
   defp analizar_registros([], filas, errores) do
     {invertir(filas, []), invertir(errores, [])}
   end
+
+  defp analizar_registros([{numero, texto} | resto], filas, errores) do
+    partes = String.split(texto, ";")
+
+    case partes do
+      [id, duracion, plazo, dependencias] ->
+        fila =
+          {numero, String.trim(id), String.trim(duracion), String.trim(plazo),
+           String.trim(dependencias)}
+
+        analizar_registros(resto, [fila | filas], errores)
+
+      _ ->
+        mensaje =
+          "Línea #{numero}: se esperaban 4 campos separados por ';' pero hay #{length(partes)}."
+
+        analizar_registros(resto, filas, [mensaje | errores])
+    end
+  end
 end
