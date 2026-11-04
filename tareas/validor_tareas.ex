@@ -50,7 +50,7 @@ defmodule ValidorTareas do
     end
   end
 
-# Revisa que los IDs sean válidos y no estén duplicados. Devuelve una lista de errores.
+# Revisa que los IDs sean válidos y no estén duplicados. "vistos" es la lista de {id, linea} ya revisados (en orden de aparición).
   defp revisar_ids([], _vistos, errores), do: invertir(errores, [])
 
   defp revisar_ids([{numero, id, _duracion, _plazo, _deps} | resto], vistos, errores) do
@@ -94,7 +94,7 @@ defmodule ValidorTareas do
     end
   end
 
-  # Revisa que los campos numéricos sean válidos. Devuelve una lista de errores.
+  # Revisa que los campos numéricos sean válidos.
     defp revisar_numeros([], errores), do: invertir(errores, [])
 
     defp revisar_numeros([{numero, id, duracion, plazo, _deps} | resto], errores) do
@@ -127,7 +127,7 @@ defmodule ValidorTareas do
     revisar_numeros(resto, errores_2)
   end
 
-  # Revisa que las dependencias sean válidas (no esten vacías, repetidas, desconocidas o a sí misma). Devuelve una lista de errores.
+  # Revisa que las dependencias sean válidas (no esten vacías, repetidas, desconocidas o a sí misma). "todas" es la lista completa de filas (sirve para saber si un id existe).
     defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
 
   defp revisar_dependencias([{numero, id, _d, _p, deps_texto} | resto], todas, errores) do
@@ -143,6 +143,7 @@ defmodule ValidorTareas do
     revisar_dependencias(resto, todas, errores_1)
   end
 
+  # Revisa una lista de dependencias. "vistas" guarda las dependencias ya revisadas para detectar repetidas.
     defp revisar_lista_deps([], _vistas, _numero, _id, _todas, errores), do: errores
 
         defp revisar_lista_deps([dep_sin_limpiar | resto], vistas, numero, id, todas, errores) do
