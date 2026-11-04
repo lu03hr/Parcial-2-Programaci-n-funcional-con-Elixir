@@ -93,4 +93,7 @@ defmodule ValidorTareas do
       buscar_linea(id, resto)
     end
   end
+
+    defp revisar_numeros([], errores), do: invertir(errores, [])
+
 end
