@@ -207,5 +207,19 @@ defmodule ValidorTareas do
 
     construir_grafo(resto, todas, [{id, dependencias} | grafo])
   end
+  
+defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
 
+  defp filtrar_deps([dep_sin_limpiar | resto], id, todas, aceptadas) do
+    dep = String.trim(dep_sin_limpiar)
+
+    es_valida =
+      dep != "" and dep != id and existe_id?(dep, todas) and not esta_en_lista?(dep, aceptadas)
+
+    if es_valida do
+      filtrar_deps(resto, id, todas, [dep | aceptadas])
+    else
+      filtrar_deps(resto, id, todas, aceptadas)
+    end
+  end
 end
