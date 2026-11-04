@@ -49,4 +49,7 @@ defmodule ValidorTareas do
         analizar_registros(resto, filas, [mensaje | errores])
     end
   end
+
+
+  defp revisar_ids([], _vistos, errores), do: invertir(errores, [])
 end
