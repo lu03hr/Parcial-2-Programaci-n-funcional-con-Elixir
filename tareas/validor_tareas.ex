@@ -300,6 +300,14 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     File.close(archivo)
   end
 
+  defp escribir_lineas(_archivo, []), do: :ok
+
+  defp escribir_lineas(archivo, [linea | resto]) do
+    IO.write(archivo, "- " <> linea <> "\n")
+    escribir_lineas(archivo, resto)
+  end
+
+
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
