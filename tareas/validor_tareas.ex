@@ -307,6 +307,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     escribir_lineas(archivo, resto)
   end
 
+  # Devuelve true si el elemento está en la lista.
   defp esta_en_lista?(_elemento, []), do: false
 
   defp esta_en_lista?(elemento, [otro | resto]) do
