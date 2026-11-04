@@ -239,6 +239,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     explorar_vecinos(vecinos, inicio, camino, grafo, ciclos)
   end
 
+
   defp explorar_vecinos([], _inicio, _camino, _grafo, ciclos), do: ciclos
 
   defp explorar_vecinos([vecino | resto], inicio, camino, grafo, ciclos) do
@@ -262,6 +263,16 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
       end
 
     explorar_vecinos(resto, inicio, camino, grafo, ciclos_1)
+  end
+
+  defp vecinos_de(_id, []), do: []
+
+  defp vecinos_de(id, [{otro_id, deps} | resto]) do
+    if id == otro_id do
+      deps
+    else
+      vecinos_de(id, resto)
+    end
   end
 
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
