@@ -241,4 +241,9 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
   # Contar: Cuenta los elementos de una lista.
   defp contar([], cantidad), do: cantidad
   defp contar([_primero | resto], cantidad), do: contar(resto, cantidad + 1)
+
+  defp unir([], _separador), do: ""
+  defp unir([ultimo], _separador), do: ultimo
+  defp unir([primero | resto], separador), do: primero <> separador <> unir(resto, separador)
+  
 end
