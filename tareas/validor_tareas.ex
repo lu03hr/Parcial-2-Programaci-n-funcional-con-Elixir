@@ -127,8 +127,9 @@ defmodule ValidorTareas do
     revisar_numeros(resto, errores_2)
   end
 
+  # Revisa que las dependencias sean válidas (no esten vacías, repetidas, desconocidas o a sí misma). Devuelve una lista de errores.
     defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
-    
+
   defp revisar_dependencias([{numero, id, _d, _p, deps_texto} | resto], todas, errores) do
     errores_1 =
       if deps_texto == "-" do
