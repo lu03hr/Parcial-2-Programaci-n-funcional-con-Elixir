@@ -276,6 +276,15 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     end
   end
 
+  defp describir_ciclos([], mensajes), do: invertir(mensajes, [])
+
+  defp describir_ciclos([ciclo | resto], mensajes) do
+    [primero | _otros] = ciclo
+    texto = unir(ciclo, " -> ") <> " -> " <> primero
+    mensaje = "Ciclo de dependencias: #{texto}  (cada flecha significa 'depende de')"
+    describir_ciclos(resto, [mensaje | mensajes])
+  end
+
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
