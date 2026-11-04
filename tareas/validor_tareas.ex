@@ -127,4 +127,7 @@ defmodule ValidorTareas do
     revisar_numeros(resto, errores_2)
   end
 
+    defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
+
+
 end
