@@ -145,5 +145,41 @@ defmodule ValidorTareas do
 
     defp revisar_lista_deps([], _vistas, _numero, _id, _todas, errores), do: errores
 
+        defp revisar_lista_deps([dep_sin_limpiar | resto], vistas, numero, id, todas, errores) do
+    dep = String.trim(dep_sin_limpiar)
+
+    errores_1 =
+      if dep == "" do
+        ["Línea #{numero} (tarea '#{id}'): hay una dependencia vacía." | errores]
+      else
+        errores
+      end
+
+    errores_2 =
+      if dep != "" and dep == id do
+        ["Línea #{numero}: la tarea '#{id}' depende de sí misma." | errores_1]
+      else
+        errores_1
+      end
+
+    errores_3 =
+      if dep != "" and esta_en_lista?(dep, vistas) do
+        ["Línea #{numero} (tarea '#{id}'): la dependencia '#{dep}' está repetida." | errores_2]
+      else
+        errores_2
+      end
+
+    errores_4 =
+      if dep != "" and dep != id and not existe_id?(dep, todas) do
+        [
+          "Línea #{numero} (tarea '#{id}'): la dependencia '#{dep}' no existe (tarea desconocida)."
+          | errores_3
+        ]
+      else
+        errores_3
+      end
+
+    revisar_lista_deps(resto, [dep | vistas], numero, id, todas, errores_4)
+  end
 
 end
