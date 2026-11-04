@@ -82,4 +82,14 @@ defmodule ValidorTareas do
 
     revisar_ids(resto, vistos ++ [{id, numero}], errores_3)
   end
+
+   defp buscar_linea(_id, []), do: nil
+
+  defp buscar_linea(id, [{otro_id, linea} | resto]) do
+    if id == otro_id do
+      linea
+    else
+      buscar_linea(id, resto)
+    end
+  end
 end
