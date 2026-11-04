@@ -89,4 +89,26 @@ defmodule GanttSvg do
 
     IO.write(archivo, "</svg>\n")
   end
+
+  defp escribir_eje(archivo, tiempo, limite, y_final) do
+    if tiempo > limite do
+      :ok
+    else
+      x = margen_izquierdo() + tiempo * escala()
+      y_inicio = margen_superior() - 10
+
+      IO.write(
+        archivo,
+        "  <line x1=\"#{x}\" y1=\"#{y_inicio}\" x2=\"#{x}\" y2=\"#{y_final}\" stroke=\"#dddddd\" stroke-width=\"1\" />\n"
+      )
+
+      IO.write(
+        archivo,
+        "  <text x=\"#{x}\" y=\"#{y_inicio - 6}\" font-family=\"Arial\" font-size=\"12\" text-anchor=\"middle\" fill=\"#555555\">#{tiempo}</text>\n"
+      )
+
+      escribir_eje(archivo, tiempo + 1, limite, y_final)
+    end
+  end
+  
 end
