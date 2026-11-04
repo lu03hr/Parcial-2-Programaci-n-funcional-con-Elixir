@@ -1,7 +1,6 @@
 defmodule ValidorTareas do
-
-    # Punto de entrada. Hace todas las revisiones, escribe el reporte y devuelve el resultado.
-    def validar(registros, ruta_salida) do
+  # Punto de entrada. Hace todas las revisiones, escribe el reporte y devuelve el resultado.
+  def validar(registros, ruta_salida) do
     {filas, errores_formato} = analizar_registros(registros, [], [])
 
     errores_ids = revisar_ids(filas, [], [])
@@ -24,7 +23,6 @@ defmodule ValidorTareas do
       {:error, contar(errores, 0)}
     end
   end
-
 
   # FORMATO: cada línea debe tener 4 campos separados por ; y Devuelve {filas, errores}. Cada fila es la tupla {numero, id, duracion, plazo, dependencias}
   defp analizar_registros([], filas, errores) do
@@ -50,7 +48,7 @@ defmodule ValidorTareas do
     end
   end
 
-# Revisa que los IDs sean válidos y no estén duplicados. "vistos" es la lista de {id, linea} ya revisados (en orden de aparición).
+  # Revisa que los IDs sean válidos y no estén duplicados. "vistos" es la lista de {id, linea} ya revisados (en orden de aparición).
   defp revisar_ids([], _vistos, errores), do: invertir(errores, [])
 
   defp revisar_ids([{numero, id, _duracion, _plazo, _deps} | resto], vistos, errores) do
@@ -84,7 +82,7 @@ defmodule ValidorTareas do
   end
 
   # Busca la línea donde apareció un ID por primera vez. Devuelve nil si no se encuentra.
-    defp buscar_linea(_id, []), do: nil
+  defp buscar_linea(_id, []), do: nil
 
   defp buscar_linea(id, [{otro_id, linea} | resto]) do
     if id == otro_id do
@@ -95,20 +93,26 @@ defmodule ValidorTareas do
   end
 
   # Revisa que los campos numéricos sean válidos.
-    defp revisar_numeros([], errores), do: invertir(errores, [])
+  defp revisar_numeros([], errores), do: invertir(errores, [])
 
-    defp revisar_numeros([{numero, id, duracion, plazo, _deps} | resto], errores) do
+  defp revisar_numeros([{numero, id, duracion, plazo, _deps} | resto], errores) do
     errores_1 =
       case Integer.parse(duracion) do
         {valor, ""} ->
           if valor > 0 do
             errores
           else
-            ["Línea #{numero} (tarea '#{id}'): la duración #{duracion} debe ser positiva." | errores]
+            [
+              "Línea #{numero} (tarea '#{id}'): la duración #{duracion} debe ser positiva."
+              | errores
+            ]
           end
 
         _ ->
-          ["Línea #{numero} (tarea '#{id}'): la duración '#{duracion}' no es un entero." | errores]
+          [
+            "Línea #{numero} (tarea '#{id}'): la duración '#{duracion}' no es un entero."
+            | errores
+          ]
       end
 
     errores_2 =
@@ -117,7 +121,10 @@ defmodule ValidorTareas do
           if valor >= 0 do
             errores_1
           else
-            ["Línea #{numero} (tarea '#{id}'): el plazo #{plazo} no puede ser negativo." | errores_1]
+            [
+              "Línea #{numero} (tarea '#{id}'): el plazo #{plazo} no puede ser negativo."
+              | errores_1
+            ]
           end
 
         _ ->
@@ -128,7 +135,7 @@ defmodule ValidorTareas do
   end
 
   # Revisa que las dependencias sean válidas (no esten vacías, repetidas, desconocidas o a sí misma). "todas" es la lista completa de filas (sirve para saber si un id existe).
-    defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
+  defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
 
   defp revisar_dependencias([{numero, id, _d, _p, deps_texto} | resto], todas, errores) do
     errores_1 =
@@ -144,9 +151,9 @@ defmodule ValidorTareas do
   end
 
   # Revisa una lista de dependencias. "vistas" guarda las dependencias ya revisadas para detectar repetidas.
-    defp revisar_lista_deps([], _vistas, _numero, _id, _todas, errores), do: errores
+  defp revisar_lista_deps([], _vistas, _numero, _id, _todas, errores), do: errores
 
-        defp revisar_lista_deps([dep_sin_limpiar | resto], vistas, numero, id, todas, errores) do
+  defp revisar_lista_deps([dep_sin_limpiar | resto], vistas, numero, id, todas, errores) do
     dep = String.trim(dep_sin_limpiar)
 
     errores_1 =
@@ -208,7 +215,7 @@ defmodule ValidorTareas do
     construir_grafo(resto, todas, [{id, dependencias} | grafo])
   end
 
-defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
+  defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
 
   defp filtrar_deps([dep_sin_limpiar | resto], id, todas, aceptadas) do
     dep = String.trim(dep_sin_limpiar)
@@ -222,7 +229,8 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
       filtrar_deps(resto, id, todas, aceptadas)
     end
   end
-# Busca ciclos en el grafo. "visitados" es la lista de nodos ya revisados y "ciclos" es la lista de ciclos encontrados.
+
+  # Busca ciclos en el grafo. "visitados" es la lista de nodos ya revisados y "ciclos" es la lista de ciclos encontrados.
   defp buscar_ciclos([], _grafo, _visitados, ciclos), do: invertir(ciclos, [])
 
   defp buscar_ciclos([{id, _deps} | resto], grafo, visitados, ciclos) do
@@ -238,7 +246,6 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     vecinos = vecinos_de(actual, grafo)
     explorar_vecinos(vecinos, inicio, camino, grafo, ciclos)
   end
-
 
   defp explorar_vecinos([], _inicio, _camino, _grafo, ciclos), do: ciclos
 
@@ -318,7 +325,6 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     end
   end
 
-
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
@@ -331,5 +337,4 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
   defp unir([], _separador), do: ""
   defp unir([ultimo], _separador), do: ultimo
   defp unir([primero | resto], separador), do: primero <> separador <> unir(resto, separador)
-
 end
