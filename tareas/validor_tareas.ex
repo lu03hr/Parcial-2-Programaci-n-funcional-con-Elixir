@@ -183,7 +183,7 @@ defmodule ValidorTareas do
     revisar_lista_deps(resto, [dep | vistas], numero, id, todas, errores_4)
   end
 
-  
+  # Devuelve true si un id está en la lista de filas.
   defp existe_id?(_id, []), do: false
 
   defp existe_id?(id, [{_n, otro_id, _d, _p, _deps} | resto]) do
