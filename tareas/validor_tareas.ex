@@ -194,4 +194,17 @@ defmodule ValidorTareas do
     end
   end
 
+  defp construir_grafo([], _todas, grafo), do: invertir(grafo, [])
+
+  defp construir_grafo([{_n, id, _d, _p, deps_texto} | resto], todas, grafo) do
+    dependencias =
+      if deps_texto == "-" do
+        []
+      else
+        filtrar_deps(String.split(deps_texto, "|"), id, todas, [])
+      end
+
+    construir_grafo(resto, todas, [{id, dependencias} | grafo])
+  end
+
 end
