@@ -210,4 +210,12 @@ defmodule GanttSvg do
       mayor_plazo(resto, mayor)
     end
   end
+
+  defp buscar_tarea([tarea | resto], id) do
+    if tarea.id == id do
+      tarea
+    else
+      buscar_tarea(resto, id)
+    end
+  end
 end
