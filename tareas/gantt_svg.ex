@@ -1,11 +1,9 @@
 defmodule GanttSvg do
-
   defp escala, do: 40
   defp margen_izquierdo, do: 90
   defp margen_superior, do: 70
   defp separacion, do: 50
   defp alto_barra, do: 30
-
 
   def generar(plan, tareas, ruta) do
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
@@ -28,7 +26,10 @@ defmodule GanttSvg do
       "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"620\" height=\"120\" viewBox=\"0 0 620 120\">\n"
     )
 
-    IO.write(archivo, "  <rect x=\"0\" y=\"0\" width=\"620\" height=\"120\" fill=\"#ffffff\" />\n")
+    IO.write(
+      archivo,
+      "  <rect x=\"0\" y=\"0\" width=\"620\" height=\"120\" fill=\"#ffffff\" />\n"
+    )
 
     texto = escapar("Sin plan: no hay tareas o la red de dependencias es inválida.")
 
@@ -132,7 +133,7 @@ defmodule GanttSvg do
     x_plazo = margen_izquierdo() + tarea.plazo * escala()
     id_seguro = escapar(id)
 
-     # Nombre de la tarea a la izquierda
+    # Nombre de la tarea a la izquierda
     IO.write(
       archivo,
       "  <text x=\"15\" y=\"#{y + 20}\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#2c3e50\">#{id_seguro}</text>\n"
@@ -221,7 +222,7 @@ defmodule GanttSvg do
     end
   end
 
-# Escapa caracteres especiales para que se puedan usar en XML.
+  # Escapa caracteres especiales para que se puedan usar en XML.
   defp escapar(texto) do
     texto
     |> String.replace("&", "&amp;")
