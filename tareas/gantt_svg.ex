@@ -18,7 +18,8 @@ defmodule GanttSvg do
 
     File.close(archivo)
   end
-  
+
+  # Si no hay plan (proyecto vacío o red inválida) se dibuja solo una leyenda.
   defp escribir_sin_plan(archivo) do
     IO.write(archivo, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 
