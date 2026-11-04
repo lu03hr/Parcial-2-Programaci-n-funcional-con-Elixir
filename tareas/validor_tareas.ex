@@ -286,6 +286,19 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     describir_ciclos(resto, [mensaje | mensajes])
   end
 
+  defp escribir_reporte(errores, ruta) do
+    {:ok, archivo} = File.open(ruta, [:write, :utf8])
+
+    if errores == [] do
+      IO.write(archivo, "Sin errores: la red de tareas es válida.\n")
+    else
+      IO.write(archivo, "Se encontraron #{contar(errores, 0)} problemas:\n")
+      escribir_lineas(archivo, errores)
+    end
+
+    File.close(archivo)
+  end
+
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
