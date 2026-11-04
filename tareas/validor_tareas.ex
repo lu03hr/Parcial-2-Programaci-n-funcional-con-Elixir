@@ -94,6 +94,7 @@ defmodule ValidorTareas do
     end
   end
 
+  # Revisa que los campos numéricos sean válidos. Devuelve una lista de errores.
     defp revisar_numeros([], errores), do: invertir(errores, [])
 
     defp revisar_numeros([{numero, id, duracion, plazo, _deps} | resto], errores) do
