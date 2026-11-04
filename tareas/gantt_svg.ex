@@ -90,6 +90,7 @@ defmodule GanttSvg do
     IO.write(archivo, "</svg>\n")
   end
 
+  # Dibuja una línea vertical y un número por cada unidad de tiempo (de 0 hasta limite).
   defp escribir_eje(archivo, tiempo, limite, y_final) do
     if tiempo > limite do
       :ok
@@ -110,5 +111,5 @@ defmodule GanttSvg do
       escribir_eje(archivo, tiempo + 1, limite, y_final)
     end
   end
-  
+
 end
