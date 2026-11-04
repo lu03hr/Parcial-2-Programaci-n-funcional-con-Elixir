@@ -233,4 +233,8 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
       buscar_ciclos(resto, grafo, [id | visitados], ciclos_1)
     end
   end
+
+  # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
+  defp invertir([], acumulado), do: acumulado
+  defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
 end
