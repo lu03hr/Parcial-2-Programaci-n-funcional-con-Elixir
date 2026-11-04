@@ -52,4 +52,34 @@ defmodule ValidorTareas do
 
 
   defp revisar_ids([], _vistos, errores), do: invertir(errores, [])
+
+  defp revisar_ids([{numero, id, _duracion, _plazo, _deps} | resto], vistos, errores) do
+    errores_1 =
+      if id == "" do
+        ["Línea #{numero}: el identificador está vacío." | errores]
+      else
+        errores
+      end
+
+    errores_2 =
+      if length(String.split(id, "|")) > 1 do
+        ["Línea #{numero}: el ID '#{id}' no puede contener '|'." | errores_1]
+      else
+        errores_1
+      end
+
+    primera_linea = buscar_linea(id, vistos)
+
+    errores_3 =
+      if id != "" and primera_linea != nil do
+        [
+          "Línea #{numero}: el ID '#{id}' está duplicado (ya apareció en la línea #{primera_linea})."
+          | errores_2
+        ]
+      else
+        errores_2
+      end
+
+    revisar_ids(resto, vistos ++ [{id, numero}], errores_3)
+  end
 end
