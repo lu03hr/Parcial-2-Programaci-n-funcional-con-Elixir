@@ -1,0 +1,2 @@
+defmodule GanttSvg do
+end
