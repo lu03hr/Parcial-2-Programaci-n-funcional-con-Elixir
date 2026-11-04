@@ -201,6 +201,7 @@ defmodule GanttSvg do
     )
   end
 
+  # Devuelve el plazo más grande entre todas las tareas.
   defp mayor_plazo([], mayor), do: mayor
 
   defp mayor_plazo([tarea | resto], mayor) do
@@ -211,6 +212,7 @@ defmodule GanttSvg do
     end
   end
 
+  # Devuelve el %Tarea{} que tiene ese id (recursión sobre la lista).
   defp buscar_tarea([tarea | resto], id) do
     if tarea.id == id do
       tarea
