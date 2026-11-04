@@ -168,4 +168,36 @@ defmodule GanttSvg do
     escribir_barras(archivo, resto, tareas, indice + 1)
   end
 
+  # Explica los colores y la línea punteada.
+  defp escribir_leyenda(archivo, y) do
+    IO.write(
+      archivo,
+      "  <rect x=\"20\" y=\"#{y}\" width=\"18\" height=\"18\" fill=\"#3498db\" stroke=\"#2c3e50\" />\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <text x=\"45\" y=\"#{y + 14}\" font-family=\"Arial\" font-size=\"12\" fill=\"#333333\">#{escapar("Termina a tiempo")}</text>\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <rect x=\"170\" y=\"#{y}\" width=\"18\" height=\"18\" fill=\"#e74c3c\" stroke=\"#2c3e50\" />\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <text x=\"195\" y=\"#{y + 14}\" font-family=\"Arial\" font-size=\"12\" fill=\"#333333\">#{escapar("Termina fuera de plazo")}</text>\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <line x1=\"360\" y1=\"#{y}\" x2=\"360\" y2=\"#{y + 18}\" stroke=\"#2c3e50\" stroke-width=\"2\" stroke-dasharray=\"4 3\" />\n"
+    )
+
+    IO.write(
+      archivo,
+      "  <text x=\"370\" y=\"#{y + 14}\" font-family=\"Arial\" font-size=\"12\" fill=\"#333333\">#{escapar("Plazo de la tarea")}</text>\n"
+    )
+  end
 end
