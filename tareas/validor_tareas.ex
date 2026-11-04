@@ -242,8 +242,9 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
   defp contar([], cantidad), do: cantidad
   defp contar([_primero | resto], cantidad), do: contar(resto, cantidad + 1)
 
+  # Unir : Une una lista de textos con un separador (reemplaza a Enum.join).
   defp unir([], _separador), do: ""
   defp unir([ultimo], _separador), do: ultimo
   defp unir([primero | resto], separador), do: primero <> separador <> unir(resto, separador)
-  
+
 end
