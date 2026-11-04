@@ -40,11 +40,14 @@ defmodule GanttSvg do
     IO.write(archivo, "</svg>\n")
   end
 
+  # Dibuja el diagrama de Gantt en formato SVG, elemento por elemento, a partir del plan y las tareas.
   defp escribir_gantt(archivo, plan, tareas) do
     finalizaciones = plan.finalizaciones
 
+    # El tiempo total es el "fin" de la última tarea del plan
     {_id, _inicio, tiempo_total} = Enum.at(finalizaciones, -1)
 
+    # El eje llega hasta el mayor entre el tiempo total y el mayor plazo
     plazo_mayor = mayor_plazo(tareas, 0)
 
     limite =
@@ -59,6 +62,7 @@ defmodule GanttSvg do
     alto = margen_superior() + cantidad * separacion() + 90
     y_final_eje = margen_superior() + cantidad * separacion()
 
+    # Encabezado del SVG
     IO.write(archivo, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 
     IO.write(
