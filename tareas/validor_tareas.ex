@@ -128,6 +128,18 @@ defmodule ValidorTareas do
   end
 
     defp revisar_dependencias([], _todas, errores), do: invertir(errores, [])
+    
+  defp revisar_dependencias([{numero, id, _d, _p, deps_texto} | resto], todas, errores) do
+    errores_1 =
+      if deps_texto == "-" do
+        # "-" significa que no tiene dependencias
+        errores
+      else
+        lista = String.split(deps_texto, "|")
+        revisar_lista_deps(lista, [], numero, id, todas, errores)
+      end
 
+    revisar_dependencias(resto, todas, errores_1)
+  end
 
 end
