@@ -50,7 +50,7 @@ defmodule ValidorTareas do
     end
   end
 
-
+# Revisa que los IDs sean válidos y no estén duplicados. Devuelve una lista de errores.
   defp revisar_ids([], _vistos, errores), do: invertir(errores, [])
 
   defp revisar_ids([{numero, id, _duracion, _plazo, _deps} | resto], vistos, errores) do
