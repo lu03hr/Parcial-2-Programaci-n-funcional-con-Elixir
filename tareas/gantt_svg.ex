@@ -220,4 +220,14 @@ defmodule GanttSvg do
       buscar_tarea(resto, id)
     end
   end
+
+# Escapa caracteres especiales para que se puedan usar en XML.
+  defp escapar(texto) do
+    texto
+    |> String.replace("&", "&amp;")
+    |> String.replace("<", "&lt;")
+    |> String.replace(">", "&gt;")
+    |> String.replace("\"", "&quot;")
+    |> String.replace("'", "&apos;")
+  end
 end
