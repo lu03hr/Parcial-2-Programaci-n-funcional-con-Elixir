@@ -239,6 +239,31 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     explorar_vecinos(vecinos, inicio, camino, grafo, ciclos)
   end
 
+  defp explorar_vecinos([], _inicio, _camino, _grafo, ciclos), do: ciclos
+
+  defp explorar_vecinos([vecino | resto], inicio, camino, grafo, ciclos) do
+    ciclos_1 =
+      cond do
+        # Volvimos al inicio: encontramos un ciclo completo
+        vecino == inicio ->
+          [invertir(camino, []) | ciclos]
+
+        # Un nodo menor que el inicio: ese ciclo se encontrará empezando en el menor
+        vecino < inicio ->
+          ciclos
+
+        # Ya está en el camino: es otro ciclo que no pasa por el inicio, se ignora
+        esta_en_lista?(vecino, camino) ->
+          ciclos
+
+        # Si no, seguimos avanzando por ese vecino
+        true ->
+          ciclos_desde(inicio, vecino, [vecino | camino], grafo, ciclos)
+      end
+
+    explorar_vecinos(resto, inicio, camino, grafo, ciclos_1)
+  end
+
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
