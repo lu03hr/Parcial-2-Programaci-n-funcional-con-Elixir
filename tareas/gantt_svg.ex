@@ -112,7 +112,7 @@ defmodule GanttSvg do
     end
   end
 
-
+  # Una barra por tarea. "indice" dice en qué fila va (0, 1, 2, ...).
   defp escribir_barras(_archivo, [], _tareas, _indice), do: :ok
 
   defp escribir_barras(archivo, [{id, inicio, fin} | resto], tareas, indice) do
@@ -132,21 +132,25 @@ defmodule GanttSvg do
     x_plazo = margen_izquierdo() + tarea.plazo * escala()
     id_seguro = escapar(id)
 
+     # Nombre de la tarea a la izquierda
     IO.write(
       archivo,
       "  <text x=\"15\" y=\"#{y + 20}\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#2c3e50\">#{id_seguro}</text>\n"
     )
 
+    # La barra (longitud proporcional a la duración)
     IO.write(
       archivo,
       "  <rect x=\"#{x}\" y=\"#{y}\" width=\"#{ancho}\" height=\"#{alto_barra()}\" fill=\"#{color}\" stroke=\"#2c3e50\" stroke-width=\"1\" />\n"
     )
 
+    # Línea punteada con el plazo de la tarea
     IO.write(
       archivo,
       "  <line x1=\"#{x_plazo}\" y1=\"#{y - 5}\" x2=\"#{x_plazo}\" y2=\"#{y + alto_barra() + 5}\" stroke=\"#2c3e50\" stroke-width=\"2\" stroke-dasharray=\"4 3\" />\n"
     )
 
+    # Hora de inicio y de fin, a la derecha de la barra. Si la línea del plazo queda más a la derecha que la barra, el texto se corre después de esa línea para que no la tape.
     x_texto =
       if x_plazo > x + ancho do
         x_plazo + 8
