@@ -200,4 +200,14 @@ defmodule GanttSvg do
       "  <text x=\"370\" y=\"#{y + 14}\" font-family=\"Arial\" font-size=\"12\" fill=\"#333333\">#{escapar("Plazo de la tarea")}</text>\n"
     )
   end
+
+  defp mayor_plazo([], mayor), do: mayor
+
+  defp mayor_plazo([tarea | resto], mayor) do
+    if tarea.plazo > mayor do
+      mayor_plazo(resto, tarea.plazo)
+    else
+      mayor_plazo(resto, mayor)
+    end
+  end
 end
