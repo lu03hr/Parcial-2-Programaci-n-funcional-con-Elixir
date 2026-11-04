@@ -234,6 +234,11 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     end
   end
 
+  defp ciclos_desde(inicio, actual, camino, grafo, ciclos) do
+    vecinos = vecinos_de(actual, grafo)
+    explorar_vecinos(vecinos, inicio, camino, grafo, ciclos)
+  end
+
   # Invertir: Da la vuelta a una lista (reemplaza a Enum.reverse).
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
