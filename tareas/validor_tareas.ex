@@ -286,6 +286,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
     describir_ciclos(resto, [mensaje | mensajes])
   end
 
+  # Escribe validacion_tareas.txt (una línea por problema).
   defp escribir_reporte(errores, ruta) do
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
 
