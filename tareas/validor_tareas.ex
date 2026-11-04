@@ -25,6 +25,8 @@ defmodule ValidorTareas do
     end
   end
 
+
+  # FORMATO: cada línea debe tener 4 campos separados por ; y Devuelve {filas, errores}. Cada fila es la tupla {numero, id, duracion, plazo, dependencias}
   defp analizar_registros([], filas, errores) do
     {invertir(filas, []), invertir(errores, [])}
   end
