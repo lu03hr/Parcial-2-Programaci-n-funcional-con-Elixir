@@ -238,6 +238,7 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
   defp invertir([], acumulado), do: acumulado
   defp invertir([primero | resto], acumulado), do: invertir(resto, [primero | acumulado])
 
+  # Contar: Cuenta los elementos de una lista.
   defp contar([], cantidad), do: cantidad
   defp contar([_primero | resto], cantidad), do: contar(resto, cantidad + 1)
 end
