@@ -207,7 +207,7 @@ defmodule ValidorTareas do
 
     construir_grafo(resto, todas, [{id, dependencias} | grafo])
   end
-  
+
 defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
 
   defp filtrar_deps([dep_sin_limpiar | resto], id, todas, aceptadas) do
@@ -220,6 +220,17 @@ defp filtrar_deps([], _id, _todas, aceptadas), do: invertir(aceptadas, [])
       filtrar_deps(resto, id, todas, [dep | aceptadas])
     else
       filtrar_deps(resto, id, todas, aceptadas)
+    end
+  end
+# Busca ciclos en el grafo. "visitados" es la lista de nodos ya revisados y "ciclos" es la lista de ciclos encontrados.
+  defp buscar_ciclos([], _grafo, _visitados, ciclos), do: invertir(ciclos, [])
+
+  defp buscar_ciclos([{id, _deps} | resto], grafo, visitados, ciclos) do
+    if esta_en_lista?(id, visitados) do
+      buscar_ciclos(resto, grafo, visitados, ciclos)
+    else
+      ciclos_1 = ciclos_desde(id, id, [id], grafo, ciclos)
+      buscar_ciclos(resto, grafo, [id | visitados], ciclos_1)
     end
   end
 end
