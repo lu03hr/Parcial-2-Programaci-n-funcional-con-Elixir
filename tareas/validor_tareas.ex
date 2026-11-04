@@ -143,4 +143,7 @@ defmodule ValidorTareas do
     revisar_dependencias(resto, todas, errores_1)
   end
 
+    defp revisar_lista_deps([], _vistas, _numero, _id, _todas, errores), do: errores
+
+
 end
