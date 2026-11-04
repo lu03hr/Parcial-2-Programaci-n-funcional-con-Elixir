@@ -194,6 +194,7 @@ defmodule ValidorTareas do
     end
   end
 
+  # Para cada fila arma {id, dependencias} quitando las inválidas (vacías, a sí misma, desconocidas o repetidas) para que el recorrido no se enrede.
   defp construir_grafo([], _todas, grafo), do: invertir(grafo, [])
 
   defp construir_grafo([{_n, id, _d, _p, deps_texto} | resto], todas, grafo) do
