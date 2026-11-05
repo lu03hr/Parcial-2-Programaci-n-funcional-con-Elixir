@@ -41,4 +41,29 @@ defmodule GeneradorParentesis do
     end
   end
 
+  
+  def contar(n, p) do
+    n
+    |> generar(p)
+    |> Enum.count()
+  end
+
+
+  def escribir_en_archivo(n, p, ruta) do
+    {:ok, archivo} = File.open(ruta, [:write, :utf8])
+
+    total =
+      n
+      |> generar(p)
+      |> Stream.map(fn cadena ->
+        IO.write(archivo, cadena <> "\n")
+        cadena
+      end)
+      |> Enum.count()
+
+    IO.write(archivo, "Total: #{total}\n")
+    File.close(archivo)
+    total
+  end
+
 end
