@@ -1,14 +1,22 @@
 defmodule GeneradorParentesis do
+  @moduledoc """
+  Módulo encargado de generar cadenas de paréntesis balanceados según la cantidad
+  de pares n y la profundidad máxima permitida p, de forma recursiva y perezosa.
+  """
 
+  @doc """
+  Devuelve un Stream con las cadenas de n pares de paréntesis balanceados cuya profundidad no supera p.
+  """
   def generar(n, p) do
     construir("", 0, 0, n, p)
   end
 
-  # Caso base
+  # Caso base, termina la construcción cuando ya se agregaron todos los paréntesis de cierre.
   defp construir(prefijo, _abiertos, cerrados, n, _p) when cerrados == n do
     [prefijo]
   end
-  # Caso recursivo
+
+  # Caso recursivo, obtiene las opciones válidas y continúa construyendo las cadenas, combina los resultados sin generarlos todos de inmediato.
   defp construir(prefijo, abiertos, cerrados, n, p) do
     opciones = opciones_validas(abiertos, cerrados, n, p)
 
@@ -21,7 +29,7 @@ defmodule GeneradorParentesis do
     end)
   end
 
-
+  # Devuelve la lista de símbolos que se pueden agregar sin romper los límites.
   defp opciones_validas(abiertos, cerrados, n, p) do
     pendientes = abiertos - cerrados
     puede_abrir = abiertos < n and pendientes < p
@@ -41,14 +49,19 @@ defmodule GeneradorParentesis do
     end
   end
 
-
+  @doc """
+  Cuenta las soluciones consumiendo el Stream una por una, sin guardarlas en una lista.
+  """
   def contar(n, p) do
     n
     |> generar(p)
     |> Enum.count()
   end
 
-
+  @doc """
+  Escribe cada solución en el archivo apenas se genera y al final agrega "Total: N".
+  Devuelve el total.
+  """
   def escribir_en_archivo(n, p, ruta) do
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
 
@@ -66,7 +79,9 @@ defmodule GeneradorParentesis do
     total
   end
 
-  
+  @doc """
+  Escribe solo la primera solución del Stream, las demás nunca se calculan.
+  """
   def escribir_primera(n, p, ruta) do
     primeras =
       n
@@ -79,9 +94,10 @@ defmodule GeneradorParentesis do
     primeras
   end
 
-
+  # Caso base, termina cuando ya no quedan cadenas por escribir.
   defp escribir_cadenas(_archivo, []), do: :ok
 
+  # Caso recursivo, escribe la primera cadena en una línea y continúa con el resto de la lista.
   defp escribir_cadenas(archivo, [cadena | resto]) do
     IO.write(archivo, cadena <> "\n")
     escribir_cadenas(archivo, resto)

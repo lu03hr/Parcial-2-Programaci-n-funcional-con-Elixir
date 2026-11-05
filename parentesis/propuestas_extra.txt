@@ -1,0 +1,6 @@
+# Los demás casos: símbolo inválido, longitud incorrecta, formato roto y cadena vacía con n=1
+2;2;(a)
+2;2;()
+2;2;(()
+x;2;()
+1;1;

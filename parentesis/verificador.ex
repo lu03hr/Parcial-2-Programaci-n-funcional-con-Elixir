@@ -1,5 +1,12 @@
 defmodule VerificadorParentesis do
+  @moduledoc """
+  Módulo encargado de verificar con recursión las cadenas propuestas (n;p;cadena)
+  e indicar si son válidas o los motivos por los que no lo son.
+  """
 
+  @doc """
+  Lee las propuestas y escribe el informe de cada una en el archivo de salida. Devuelve :no_existe si el archivo de entrada no existe.
+  """
   def verificar_archivo(ruta_entrada, ruta_salida) do
     if File.exists?(ruta_entrada) do
       {:ok, salida} = File.open(ruta_salida, [:write, :utf8])
@@ -23,7 +30,7 @@ defmodule VerificadorParentesis do
     end
   end
 
-
+  # Separa n;p;cadena y valida que n y p sean enteros. Devuelve el texto del informe.
   defp verificar_linea(numero, texto) do
     case String.split(texto, ";") do
       [n_texto, p_texto, cadena_sin_limpiar] ->
@@ -44,7 +51,7 @@ defmodule VerificadorParentesis do
     end
   end
 
-
+  # Recorre la cadena con recursión y arma el informe con todos los motivos.
   defp evaluar(numero, n, p, cadena) do
     simbolos = String.graphemes(cadena)
 
@@ -60,6 +67,7 @@ defmodule VerificadorParentesis do
     estado = recorrer(simbolos, 0, estado_inicial)
     longitud = length(simbolos)
 
+    # Se van agregando los motivos (lista vacía = la cadena es válida)
     motivos_1 =
       if longitud != 2 * n do
         ["La longitud es #{longitud} y debería ser #{2 * n}."]
@@ -122,14 +130,24 @@ defmodule VerificadorParentesis do
     end
   end
 
+  # Caso base, termina cuando ya no quedan motivos y devuelve un texto vacío.
+  defp formatear_motivos([]), do: ""
 
+  # Caso recursivo, escribe el primer motivo en una línea y continúa con el resto.
+  defp formatear_motivos([motivo | resto]) do
+    "  - " <> motivo <> "\n" <> formatear_motivos(resto)
+  end
+
+  # Caso base, termina cuando ya no quedan símbolos y devuelve el estado final.
   defp recorrer([], _posicion, estado), do: estado
+
+  # Caso recursivo, procesa el primer símbolo, actualiza el estado y continúa con el resto.
   defp recorrer([simbolo | resto], posicion, estado) do
     nuevo_estado = procesar_simbolo(simbolo, posicion, estado)
     recorrer(resto, posicion + 1, nuevo_estado)
   end
 
-
+  # Para "(", sube el balance, actualiza la profundidad máxima y anota la primera posición donde se superó p.
   defp procesar_simbolo("(", posicion, estado) do
     balance = estado.balance + 1
 
@@ -150,6 +168,7 @@ defmodule VerificadorParentesis do
     %{estado | balance: balance, profundidad: profundidad, exceso_profundidad: exceso}
   end
 
+  # Para ")", baja el balance y, si queda negativo, anota la primera posición donde cerró más de lo abierto.
   defp procesar_simbolo(")", posicion, estado) do
     balance = estado.balance - 1
 
@@ -163,6 +182,7 @@ defmodule VerificadorParentesis do
     %{estado | balance: balance, cierre_excesivo: cierre}
   end
 
+  # Para cualquier otro símbolo, anota el primero que aparezca como inválido.
   defp procesar_simbolo(otro, posicion, estado) do
     invalido =
       if estado.simbolo_invalido == nil do
