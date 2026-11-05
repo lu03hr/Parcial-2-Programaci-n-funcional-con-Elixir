@@ -1,5 +1,50 @@
 defmodule VerificadorParentesis do
 
+  def verificar_archivo(ruta_entrada, ruta_salida) do
+    if File.exists?(ruta_entrada) do
+      {:ok, salida} = File.open(ruta_salida, [:write, :utf8])
+
+      ruta_entrada
+      |> File.stream!()
+      |> Stream.with_index(1)
+      |> Stream.map(fn {linea, numero} -> {numero, String.trim(linea)} end)
+      |> Stream.filter(fn {_numero, texto} -> texto != "" end)
+      |> Stream.filter(fn {_numero, texto} -> not String.starts_with?(texto, "#") end)
+      |> Enum.each(fn {numero, texto} ->
+        informe = verificar_linea(numero, texto)
+        IO.write(salida, informe)
+      end)
+
+      File.close(salida)
+      :ok
+    else
+      IO.puts("AVISO: no se encontró el archivo #{ruta_entrada}.")
+      :no_existe
+    end
+  end
+
+
+  defp verificar_linea(numero, texto) do
+    case String.split(texto, ";") do
+      [n_texto, p_texto, cadena_sin_limpiar] ->
+        cadena = String.trim(cadena_sin_limpiar)
+        resultado_n = Integer.parse(String.trim(n_texto))
+        resultado_p = Integer.parse(String.trim(p_texto))
+
+        case {resultado_n, resultado_p} do
+          {{n, ""}, {p, ""}} ->
+            evaluar(numero, n, p, cadena)
+
+          _ ->
+            "Línea #{numero}: formato inválido, n y p deben ser enteros: #{texto}\n"
+        end
+
+      _ ->
+        "Línea #{numero}: formato inválido, se esperaba n;p;cadena: #{texto}\n"
+    end
+  end
+
+
   defp evaluar(numero, n, p, cadena) do
     simbolos = String.graphemes(cadena)
 
@@ -77,7 +122,7 @@ defmodule VerificadorParentesis do
     end
   end
 
-  
+
   defp recorrer([], _posicion, estado), do: estado
   defp recorrer([simbolo | resto], posicion, estado) do
     nuevo_estado = procesar_simbolo(simbolo, posicion, estado)
