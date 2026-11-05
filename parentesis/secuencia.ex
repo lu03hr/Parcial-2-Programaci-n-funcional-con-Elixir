@@ -1,3 +1,5 @@
+# Integrantes: Luisa Hernández, Isabella Hincapié, Camila González
+
 defmodule SecuenciaParentesis do
   @moduledoc """
   Módulo encargado de generar la secuencia de cantidades de soluciones para

@@ -1,3 +1,5 @@
+# Integrantes: Luisa Hernández, Isabella Hincapié, Camila González
+
 defmodule GeneradorParentesis do
   @moduledoc """
   Módulo encargado de generar cadenas de paréntesis balanceados según la cantidad

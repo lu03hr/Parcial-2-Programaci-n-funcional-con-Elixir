@@ -1,3 +1,5 @@
+# Integrantes: Luisa Hernández, Isabella Hincapié, Camila González
+
 defmodule LectorParametros do
   @moduledoc """
   Módulo encargado de leer y validar el archivo de parámetros con formato
