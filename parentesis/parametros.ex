@@ -1,5 +1,13 @@
 defmodule LectorParametros do
+  @moduledoc """
+  Módulo encargado de leer y validar el archivo de parámetros con formato
+  n;profundidad_max, devolviendo cada línea como un par válido o un error.
+  """
 
+  @doc """
+  Lee el archivo de parámetros mediante un Stream, y devuelve una
+  lista de {:ok, n, p} o {:error, mensaje} por cada línea.
+  """
   def leer(ruta) do
     ruta
     |> File.stream!()
@@ -11,6 +19,7 @@ defmodule LectorParametros do
     |> Enum.to_list()
   end
 
+  # Verifica que la línea tenga dos enteros con n >= 1 y 1 <= p <= n.
   defp convertir_linea(numero, texto) do
     case String.split(texto, ";") do
       [n_texto, p_texto] ->
