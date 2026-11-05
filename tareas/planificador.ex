@@ -4,7 +4,7 @@ defmodule Planificador do
     {:ok, archivo} = File.open(ruta_csv, [:write, :utf8])
     IO.write(archivo, "id;orden;duracion_total;penalizacion\n")
 
-    # Se ordenan por ID para que las tareas habilitadas se prueben alfabéticamente
+    # Se ordenan por id para que las tareas habilitadas se prueben de manera alfabetica
     pendientes = Enum.sort_by(tareas, fn tarea -> tarea.id end)
 
     acumulador = %{total: 0, minima: nil, mejores: [], tareas: tareas}
