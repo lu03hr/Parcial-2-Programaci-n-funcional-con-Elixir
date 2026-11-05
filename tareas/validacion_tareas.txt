@@ -1,0 +1,9 @@
+Se encontraron 8 problemas:
+- Línea 7: el ID 'B' está duplicado (ya apareció en la línea 4).
+- Línea 6 (tarea 'D'): la duración 0 debe ser positiva.
+- Línea 8 (tarea 'E'): la duración 'x' no es un entero.
+- Línea 8 (tarea 'E'): el plazo -1 no puede ser negativo.
+- Línea 6: la tarea 'D' depende de sí misma.
+- Línea 6 (tarea 'D'): la dependencia 'Z' no existe (tarea desconocida).
+- Línea 8 (tarea 'E'): la dependencia 'A' está repetida.
+- Ciclo de dependencias: A -> C -> B -> A  (cada flecha significa 'depende de')

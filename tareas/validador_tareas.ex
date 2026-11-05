@@ -1,4 +1,4 @@
-defmodule ValidorTareas do
+defmodule ValidadorTareas do
   # Punto de entrada. Hace todas las revisiones, escribe el reporte y devuelve el resultado.
   def validar(registros, ruta_salida) do
     {filas, errores_formato} = analizar_registros(registros, [], [])

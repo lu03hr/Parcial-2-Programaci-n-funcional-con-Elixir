@@ -1,0 +1,1 @@
+Red de tareas inválida (8 problemas): no se enumeran planes. Ver validacion_tareas.txt
