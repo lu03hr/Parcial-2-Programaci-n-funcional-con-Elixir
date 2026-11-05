@@ -1,5 +1,7 @@
 # Integrantes: Luisa Hernández, Isabella Hincapié, Camila González
 
+File.cd!(__DIR__)
+
 # Carga los módulos del problema (así no hace falta compilar antes)
 Code.require_file("generador.ex")
 Code.require_file("parametros.ex")
