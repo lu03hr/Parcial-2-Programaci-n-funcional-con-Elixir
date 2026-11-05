@@ -1,0 +1,7 @@
+Línea 2: n=3, p=2, cadena=(()()) -> VÁLIDA (profundidad máxima alcanzada: 2).
+Línea 3: n=3, p=2, cadena=((())) -> INVÁLIDA
+  - Excede la profundidad máxima p=2. Primer prefijo que la excede: "(((" (posición 2).
+  - Profundidad máxima alcanzada: 3.
+Línea 4: n=3, p=2, cadena=())(() -> INVÁLIDA
+  - Cierra más paréntesis de los que abrió. Primer prefijo problemático: "())" (posición 2).
+  - Profundidad máxima alcanzada: 1.
