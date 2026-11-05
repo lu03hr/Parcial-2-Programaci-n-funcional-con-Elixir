@@ -41,7 +41,7 @@ defmodule GeneradorParentesis do
     end
   end
 
-  
+
   def contar(n, p) do
     n
     |> generar(p)
@@ -64,6 +64,27 @@ defmodule GeneradorParentesis do
     IO.write(archivo, "Total: #{total}\n")
     File.close(archivo)
     total
+  end
+
+  
+  def escribir_primera(n, p, ruta) do
+    primeras =
+      n
+      |> generar(p)
+      |> Enum.take(1)
+
+    {:ok, archivo} = File.open(ruta, [:write, :utf8])
+    escribir_cadenas(archivo, primeras)
+    File.close(archivo)
+    primeras
+  end
+
+
+  defp escribir_cadenas(_archivo, []), do: :ok
+
+  defp escribir_cadenas(archivo, [cadena | resto]) do
+    IO.write(archivo, cadena <> "\n")
+    escribir_cadenas(archivo, resto)
   end
 
 end
