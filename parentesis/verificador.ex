@@ -123,6 +123,13 @@ defmodule VerificadorParentesis do
   end
 
 
+  defp formatear_motivos([]), do: ""
+
+  defp formatear_motivos([motivo | resto]) do
+    "  - " <> motivo <> "\n" <> formatear_motivos(resto)
+  end
+
+
   defp recorrer([], _posicion, estado), do: estado
   defp recorrer([simbolo | resto], posicion, estado) do
     nuevo_estado = procesar_simbolo(simbolo, posicion, estado)
