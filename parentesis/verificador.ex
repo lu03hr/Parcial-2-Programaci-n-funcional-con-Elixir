@@ -1,3 +1,5 @@
+# Integrantes: Luisa Hernández, Isabella Hincapié, Camila González
+
 defmodule VerificadorParentesis do
   @moduledoc """
   Módulo encargado de verificar con recursión las cadenas propuestas (n;p;cadena)
