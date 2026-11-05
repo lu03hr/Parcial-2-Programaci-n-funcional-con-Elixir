@@ -1,10 +1,24 @@
-defmodule Planificador do
+#integrantes: Isabella Hincapié Bocanegra, Luisa Fernanda Hernandez, Camila González Restrepo
 
+
+defmodule Planificador do
+  @moduledoc """
+  Módulo para encontrar recursivamente todos los planes válidos de un proyecto
+  y escribir planes.csv y resumen_tareas.txt
+  """
+
+  @doc """
+  Función para enumerar todos los planes válidos y escribir cada uno en planes.csv
+
+  ## Parámetros
+
+    - tareas: Lista de structs %Tarea{} ya validados.
+    - ruta_csv: Ruta del archivo de planes.
+  """
   def planificar(tareas, ruta_csv) do
     {:ok, archivo} = File.open(ruta_csv, [:write, :utf8])
     IO.write(archivo, "id;orden;duracion_total;penalizacion\n")
 
-    # Se ordenan por id para que las tareas habilitadas se prueben de manera alfabetica
     pendientes = Enum.sort_by(tareas, fn tarea -> tarea.id end)
 
     acumulador = %{total: 0, minima: nil, mejores: [], tareas: tareas}
@@ -15,10 +29,12 @@ defmodule Planificador do
     resultado
   end
 
+  # Caso base: no quedan tareas pendientes, el plan está completo y se registra
   defp explorar([], hechas, tiempo, acumulador, archivo) do
     registrar_plan(hechas, tiempo, acumulador, archivo)
   end
 
+  # Caso recursivo: busca las tareas habilitadas (dependencias terminadas) y las prueba
   defp explorar(pendientes, hechas, tiempo, acumulador, archivo) do
     habilitadas =
       Enum.filter(pendientes, fn tarea ->
@@ -28,8 +44,10 @@ defmodule Planificador do
     probar(habilitadas, pendientes, hechas, tiempo, acumulador, archivo)
   end
 
+  # Caso base: no hay más tareas habilitadas para probar
   defp probar([], _pendientes, _hechas, _tiempo, acumulador, _archivo), do: acumulador
 
+  # ejecuta la primera habilitada, sigue explorando y luego retrocede para probar las otras
   defp probar([tarea | otras], pendientes, hechas, tiempo, acumulador, archivo) do
     inicio = tiempo
     fin = tiempo + tarea.duracion
@@ -41,10 +59,12 @@ defmodule Planificador do
     probar(otras, pendientes, hechas, tiempo, acumulador_1, archivo)
   end
 
+  # Quita de las pendientes la tarea con el id dado
   defp quitar_tarea(pendientes, id) do
     Enum.filter(pendientes, fn tarea -> tarea.id != id end)
   end
 
+  # Verifica recursivamente que todas las dependencias ya estén terminadas
   defp dependencias_cumplidas?([], _hechas), do: true
 
   defp dependencias_cumplidas?([dependencia | resto], hechas) do
@@ -55,6 +75,7 @@ defmodule Planificador do
     end
   end
 
+  # Busca recursivamente si un id está en la lista de tareas hechas
   defp terminada?(_id, []), do: false
 
   defp terminada?(id, [{otro_id, _inicio, _fin} | resto]) do
@@ -65,6 +86,7 @@ defmodule Planificador do
     end
   end
 
+  # arma el %Plan{}, calcula su penalización y escribe su fila en planes.csv de inmediato
   defp registrar_plan(hechas, tiempo_total, acumulador, archivo) do
     finalizaciones = Enum.reverse(hechas)
     orden = Enum.map(finalizaciones, fn {id, _inicio, _fin} -> id end)
@@ -75,21 +97,18 @@ defmodule Planificador do
     numero = acumulador.total + 1
     texto_orden = Enum.join(orden, " → ")
 
-    # Se escribe la fila de inmediato
     IO.write(archivo, "#{numero};#{texto_orden};#{tiempo_total};#{penalizacion}\n")
 
     actualizar_mejores(acumulador, numero, plan)
   end
 
-  # calcular_penalizacion/3
-  # Suma max(0, fin - plazo) de cada tarea del plan.
+  # suma max(0, fin - plazo) de cada tarea del plan
   defp calcular_penalizacion([], _tareas, suma), do: suma
 
   defp calcular_penalizacion([{id, _inicio, fin} | resto], tareas, suma) do
     tarea = buscar_tarea(tareas, id)
     retraso = fin - tarea.plazo
 
-    # max(0, retraso): si terminó a tiempo no hay penalización
     penalizacion_tarea =
       if retraso > 0 do
         retraso
@@ -100,7 +119,7 @@ defmodule Planificador do
     calcular_penalizacion(resto, tareas, suma + penalizacion_tarea)
   end
 
-
+  # busca recursivamente el struct %Tarea{} que tiene el id dado
   defp buscar_tarea([tarea | resto], id) do
     if tarea.id == id do
       tarea
@@ -109,7 +128,7 @@ defmodule Planificador do
     end
   end
 
-
+  # actualiza el acumulador, un plan mejor reinicia los mejores, un empate se agrega
   defp actualizar_mejores(acumulador, numero, plan) do
     minima = acumulador.minima
 
@@ -125,6 +144,9 @@ defmodule Planificador do
     end
   end
 
+  @doc """
+  Función que devuelve el primer plan con penalización mínima, o nil si no hay planes
+  """
   def primer_plan_optimo(resultado) do
     case resultado.mejores do
       [{_numero, plan} | _resto] -> plan
@@ -132,6 +154,9 @@ defmodule Planificador do
     end
   end
 
+  @doc """
+  Función para escribir el resumen del proyecto en el archivo y en pantalla
+  """
   def escribir_resumen(resultado, tareas, ruta) do
     duracion_total = sumar_duraciones(tareas, 0)
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
@@ -150,10 +175,16 @@ defmodule Planificador do
     File.close(archivo)
   end
 
+  @doc """
+  Función para escribir el resumen cuando el proyecto no tiene tareas
+  """
   def escribir_resumen_vacio(ruta) do
     escribir_resumen_sin_planes(ruta, "Proyecto vacío: no hay tareas, no se enumeran planes.")
   end
 
+  @doc """
+  Función para escribir el resumen cuando la red de tareas es inválida
+  """
   def escribir_resumen_invalido(ruta, cantidad) do
     escribir_resumen_sin_planes(
       ruta,
@@ -161,18 +192,23 @@ defmodule Planificador do
     )
   end
 
+  # reemplaza el resumen con un solo mensaje y lo muestra en pantalla
   defp escribir_resumen_sin_planes(ruta, mensaje) do
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
     escribir_linea(archivo, mensaje)
     File.close(archivo)
   end
 
+  @doc """
+  Función para dejar planes.csv solo con el encabezado cuando no se enumeran planes
+  """
   def escribir_planes_vacio(ruta) do
     {:ok, archivo} = File.open(ruta, [:write, :utf8])
     IO.write(archivo, "id;orden;duracion_total;penalizacion\n")
     File.close(archivo)
   end
 
+  # escribe recursivamente cada plan con penalización mínima
   defp escribir_mejores(_archivo, []), do: :ok
 
   defp escribir_mejores(archivo, [{numero, plan} | resto]) do
@@ -181,11 +217,13 @@ defmodule Planificador do
     escribir_mejores(archivo, resto)
   end
 
+  # muestra el texto en pantalla y lo escribe en el archivo
   defp escribir_linea(archivo, texto) do
     IO.puts(texto)
     IO.write(archivo, texto <> "\n")
   end
 
+  # suma recursivamente la duración de todas las tareas
   defp sumar_duraciones([], suma), do: suma
 
   defp sumar_duraciones([tarea | resto], suma) do

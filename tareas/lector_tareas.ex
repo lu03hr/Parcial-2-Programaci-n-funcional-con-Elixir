@@ -1,6 +1,17 @@
+#integrantes: Isabella Hincapié Bocanegra, Luisa Fernanda Hernandez, Camila González Restrepo
+
 defmodule LectorTareas do
+  @moduledoc """
+  Módulo para leer tareas.csv de forma perezosa y convertir cada línea en un %Tarea{}
+  """
 
+  @doc """
+  Función para leer el archivo con File.stream! y devolver las líneas útiles con su número de línea.
 
+  ## Parámetros
+
+    - ruta: Ruta del archivo de tareas
+  """
   def leer_registros(ruta) do
     ruta
     |> File.stream!()
@@ -11,14 +22,16 @@ defmodule LectorTareas do
     |> Enum.to_list()
   end
 
-
+  @doc """
+  Función para convertir los registros ya validados en una lista de %Tarea{}
+  """
   def convertir_registros(registros) do
     registros
     |> Stream.map(fn {_numero, texto} -> convertir_linea(texto) end)
     |> Enum.to_list()
   end
 
-
+  # convierte una línea "id;duracion;plazo;dependencias" en un %Tarea{}
   defp convertir_linea(texto) do
     [id, duracion_texto, plazo_texto, dependencias_texto] = String.split(texto, ";")
 
@@ -34,7 +47,7 @@ defmodule LectorTareas do
     }
   end
 
-
+  # "-" significa sin dependencias; si no, se separan por "|"
   defp separar_dependencias("-"), do: []
 
   defp separar_dependencias(texto) do

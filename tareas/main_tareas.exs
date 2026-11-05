@@ -1,12 +1,25 @@
-# Carga los módulos del problema, así no hace falta compilar antes
+File.cd!(__DIR__)
 Code.require_file("tarea.ex")
 Code.require_file("lector_tareas.ex")
 Code.require_file("validador_tareas.ex")
 Code.require_file("planificador.ex")
 Code.require_file("gantt_svg.ex")
 
+#integrantes: Isabella Hincapié Bocanegra, Luisa Fernanda Hernandez, Camila González Restrepo
+
+
 defmodule MainTareas do
-  # Revisa que el archivo exista, si no, avisa sin romper el programa
+  @moduledoc """
+  Programa principal del problema 2: lee, valida, planifica y genera las salidas
+  """
+
+  @doc """
+  Función principal, si el archivo existe lo procesa; si no, muestra un aviso
+
+  ## Parámetros
+
+    - ruta_entrada: Ruta del archivo de tareas, por defecto tareas.csv
+  """
   def main(ruta_entrada) do
     if File.exists?(ruta_entrada) do
       procesar(ruta_entrada)
@@ -15,7 +28,7 @@ defmodule MainTareas do
     end
   end
 
-  # lee, valida con recursión, si todo está bien, planifica
+  # valida las tareas; si hay errores no se enumeran planes
   defp procesar(ruta_entrada) do
     registros = LectorTareas.leer_registros(ruta_entrada)
     resultado_validacion = ValidadorTareas.validar(registros, "validacion_tareas.txt")
@@ -25,20 +38,17 @@ defmodule MainTareas do
         planificar(registros)
 
       {:error, cantidad} ->
-        # Red inválida. No se enumeran planes. Se reemplazan las salidas para que
-        # no queden archivos viejos de otra ejecución, y el SVG muestra la leyenda.
         Planificador.escribir_resumen_invalido("resumen_tareas.txt", cantidad)
         Planificador.escribir_planes_vacio("planes.csv")
         GanttSvg.generar(nil, [], "mejor_plan.svg")
     end
   end
 
-
+  # convierte las tareas y genera planes.csv, el resumen y el svg
   defp planificar(registros) do
     tareas = LectorTareas.convertir_registros(registros)
 
     if tareas == [] do
-      # Caso proyecto vacío (el mensaje se muestra al escribir el resumen)
       Planificador.escribir_resumen_vacio("resumen_tareas.txt")
       Planificador.escribir_planes_vacio("planes.csv")
       GanttSvg.generar(nil, [], "mejor_plan.svg")
@@ -52,7 +62,6 @@ defmodule MainTareas do
   end
 end
 
-# Si se pasa un archivo como argumento se usa ese; si no, el de por defecto.
 ruta =
   case System.argv() do
     [primero | _resto] -> primero
