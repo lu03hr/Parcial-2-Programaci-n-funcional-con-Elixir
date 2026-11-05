@@ -1,0 +1,6 @@
+# Caso valido con muchas órdenes: 4 tareas independientes (24 planes)
+# id;duracion;plazo;dependencias
+A;2;3;-
+B;1;2;-
+C;3;8;-
+D;2;5;-
